@@ -1,0 +1,26 @@
+{
+  "name": "forge3-hourly-report-editor",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "pako": "^2.1.0",
+    "pdf-lib": "^1.17.1",
+    "vue": "^3.4.37"
+  },
+  "devDependencies": {
+    "@rollup/plugin-inject": "^5.0.5",
+    "@types/pako": "^2.0.3",
+    "@vitejs/plugin-vue": "^5.1.2",
+    "buffer": "^6.0.3",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1",
+    "vue-tsc": "^2.0.29"
+  }
+}
