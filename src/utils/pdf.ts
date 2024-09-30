@@ -17,7 +17,6 @@ export async function modifyPdf(
   companyLogoFile: Blob,
   rules: Rules[]
 ) {
-    console.log(companyLogoFile)
   const currentPdfBytes = await currentPdfFile.arrayBuffer();
   const companyLogoFileBytes = await companyLogoFile.arrayBuffer();
 
@@ -27,24 +26,24 @@ export async function modifyPdf(
   const enumeratedIndirectObjects = pdfDoc.context.enumerateIndirectObjects();
 
   let updatedLogo = 0;
-
-  for (const [pdfRef, pdfObject] of enumeratedIndirectObjects) {
+  for (const [_, pdfObject] of enumeratedIndirectObjects) {
     if (!(pdfObject instanceof PDFRawStream)) {
       continue;
     }
 
     if (pdfObject?.dict?.get(PDFName.of("Subtype")) === PDFName.of("Image")) {
       if (updatedLogo < 2) {
-        pdfDoc.context.delete(pdfRef)
-        
-        const marioImage = await pdfDoc.embedPng(companyLogoFileBytes);
-        firstPage.drawImage(marioImage, {
-          x: firstPage.getWidth() - marioImage.width / 2 + 50, // Adjust the x position as needed
-          y: firstPage.getWidth() + marioImage.height + 25, // Adjust the y position as needed
-          width: marioImage.width / 4,
-          height: marioImage.height / 4,
-        });
+        // @ts-ignore
+        pdfObject.contents = new Uint8Array();
         updatedLogo+=1
+      } else if (updatedLogo === 2) {
+        const embededLogo = await pdfDoc.embedPng(companyLogoFileBytes);
+        firstPage.drawImage(embededLogo, {
+          x: firstPage.getWidth() - embededLogo.width / 2 + 50, // Adjust the x position as needed
+          y: firstPage.getWidth() + embededLogo.height + 25, // Adjust the y position as needed
+          width: embededLogo.width / 4,
+          height: embededLogo.height / 4,
+        });
       }
       continue;
     }
@@ -65,5 +64,5 @@ export async function modifyPdf(
     }
   }
 
-  return pdfDoc.save()
+  return pdfDoc.save({ addDefaultPage: false })
 }
